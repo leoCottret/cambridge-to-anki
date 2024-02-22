@@ -172,7 +172,10 @@ class QS(scrapy.Spider):
                     check_redirection_pp = QS.getText(check_redirection_pp[0], '.def *::text', '', '', False)
 
             # present participle of an other word, follow the redirection and create a card for this word instead
-            if check_redirection_pp == 'present participle of' or (len(check_redirection_pp)>14 and check_redirection_pp[:14] == 'US spelling of'):
+            # the reason being, like most dictionnaries it won't have definitions but just a redirection to it, so it creates an almost empty card
+            #   same for past simple, past participle, and both at once
+            #   same for US spelling of 
+            if check_redirection_pp == 'present participle of' or check_redirection_pp == 'past simple of' or check_redirection_pp == 'past participle of' or check_redirection_pp == 'past simple and past participle of' or (len(check_redirection_pp)>14 and check_redirection_pp[:14] == 'US spelling of'):
                 print('redirection: ' + str(response.url))
                 new_word = response.css(".di-body")[0].css(".entry-body")[0].css(".entry-body__el")[0].css('.def')[0].css('.Ref *::text')[0].extract()
                 print('NEW WORD ' + new_word)
