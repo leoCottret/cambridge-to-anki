@@ -1,0 +1,7 @@
+*.env
+*__pycache__
+*.mypy_cache
+lib
+bin
+*cambridgetoanki.log
+*anki_to_import.csv
