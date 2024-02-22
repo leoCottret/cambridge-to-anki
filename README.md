@@ -6,7 +6,7 @@ WIP, but on linux, it should be:
 1. `virtualenv .`
 1. `. ./bin/activate`
 1. `pip3 install -r requirements.txt`
-1. `cp ./cta/cta/.env.template ./cta/cta/.env` then edit read the instructions in the .env
+1. `cp ./cta/cta/.env.template ./cta/cta/.env` then edit the .env with the help of the comments
 1. fill your wordlist of words you want to learn
 1. ready to go! Well, ready for the anki part then ready to go
 1. then `deactivate` to leave the virtualenv shell when you're finished with cambridgetoanki
