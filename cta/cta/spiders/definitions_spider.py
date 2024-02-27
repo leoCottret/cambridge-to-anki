@@ -141,7 +141,7 @@ class QS(scrapy.Spider):
     def parse(self, response):
         if str(response.request.url) == QS.BASE_URL:
             # TODO implement tracking of words and a final function execution to know which words have been skipped
-            print('ERROR: a word did not exist! Search for 302 in cambridgetoanki.log to find which one')
+            print('ERROR: a word does not exist! Search for 302 in cambridgetoanki.log to find which one')
             return
 
         items = ScrapyAnkiCambridgeItem()
