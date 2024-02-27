@@ -154,7 +154,6 @@ class QS(scrapy.Spider):
             if not title[i].isalnum():
                 title = title[:i] + '-' + title[i+1:]
 
-        print(title)
         note_id = QS.ANKI_IMPORT_NOTE_ID_FLAG + '-' + title
         front = '<!-- ' + QS.ANKI_FILE_FLAG + ' ' + QS.VERSION  + ' -->\n' # front of the anki card
         back = '(nothing)' # back of the anki card
@@ -247,6 +246,9 @@ class QS(scrapy.Spider):
             # set the words to lowercase
             word_wtf_split = word.split()
             word_wtf = word.lower() if len(word_wtf_split) == 1 else word_wtf_split[0].lower()
+            # "upshot" -> res "the upshot", we want "upshot", not "the"!
+            if word_wtf == 'the' and len(word_wtf_split) > 1:
+                word_wtf = word_wtf_split[1].lower()
             # eg boggle -> boggl, to hide boggling
             # TODO: add smarter checks
             #   eg: ily AND type is adverb (to avoid catching family)
