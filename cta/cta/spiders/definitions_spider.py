@@ -156,7 +156,7 @@ class QS(scrapy.Spider):
 
         note_id = QS.ANKI_IMPORT_NOTE_ID_FLAG + '-' + title
         front = '<!-- ' + QS.ANKI_FILE_FLAG + ' ' + QS.VERSION  + ' -->\n' # front of the anki card
-        back = '(nothing)' # back of the anki card
+        back = '' # back of the anki card
 
         check_valid_word = response.css('.di-body')
         if len(check_valid_word) > 0:
