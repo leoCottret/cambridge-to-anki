@@ -224,6 +224,22 @@ class QS(scrapy.Spider):
                     if not check_file_already_downloaded.is_file():
                         subprocess.run(['curl', QS.BASE_DOMAIN + audio_uk, '-o', audio_file_full_path])
                     audio_tag += ' [sound:' + audio_file_name + ']'
+            else:
+                # as fallback, get the american pronunciation instead
+                pronunciation_rows = header.css('.us.dpron-i')
+                audio_us = pronunciation_rows[0].css('audio > source')[0].xpath("@src")[0].extract()
+                # 1 audio is enough
+                if counter == 1:
+                    # download audio file and put it in anki folder
+                    # PS: I'm using curl since it works "as is" to download a file via https
+                    audio_file_name = QS.ANKI_FILE_FLAG + '_' + title + '.mp3'
+                    audio_file_full_path = QS.ANKI_MEDIA_FOLDER_PATH + audio_file_name
+                    # check if mp3 file isn't already downloaded
+                    check_file_already_downloaded = Path(audio_file_full_path)
+                    if not check_file_already_downloaded.is_file():
+                        subprocess.run(['curl', QS.BASE_DOMAIN + audio_us, '-o', audio_file_full_path])
+                    audio_tag += ' US: [sound:' + audio_file_name + ']'
+
 
             # get the plural/conjugations, used to create closures in the card. Is optional
             words_extra = header.css('.inf.dinf::text').extract()
