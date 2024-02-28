@@ -23,9 +23,10 @@ class QS(scrapy.Spider):
     ANKI_MEDIA_FOLDER_PATH: str = os.getenv('ANKI_MEDIA_FOLDER_PATH', N)
     ANKI_FILE_FLAG: str = os.getenv('ANKI_FILE_FLAG', N)
     ANKI_IMPORT_NOTE_ID_FLAG: str = os.getenv('ANKI_IMPORT_NOTE_ID_FLAG', N)
+    CUSTOM_USER_AGENT: str = os.getenv('CUSTOM_USER_AGENT', N)
     VERSION: str = os.getenv('VERSION', N)
 
-    if WORD_LIST_FILE_PATH == N or WORD_LIST_FILE_BACKUP_PATH == N or WORD_LIST_FILE_BACKUP_PATH == N or ANKI_FILE_FLAG == N or ANKI_IMPORT_NOTE_ID_FLAG == N or VERSION == N:
+    if WORD_LIST_FILE_PATH == N or WORD_LIST_FILE_BACKUP_PATH == N or ANKI_MEDIA_FOLDER_PATH == N or CUSTOM_USER_AGENT == N or WORD_LIST_FILE_BACKUP_PATH == N or ANKI_FILE_FLAG == N or ANKI_IMPORT_NOTE_ID_FLAG == N or VERSION == N:
         print('ERROR: One of the .env variable is missing, did you copy the file correctly?')
         exit()
 
@@ -62,6 +63,18 @@ class QS(scrapy.Spider):
             file.write(word + '\n')
 
     # --- FUNCTIONS ---
+    # execute os command and check if it has been executed sucessfully
+    # if not, print why and crash the stop the script (it should NOT happen)
+    def execute_command(os_command: str):
+        p = subprocess.Popen(os_command, stdout=subprocess.PIPE, shell=True)
+        (output, err) = p.communicate() # (stdout, stderr)
+        # wait for command to finish
+        p_status = p.wait()
+
+        # 0 = command succeeded
+        if p_status != 0:
+            print('OS command error! command -> '+ str(os_command) + '\tstderr -> ' + str(err) +  "\tstdout -> " + str(output))
+            exit()
     # the right delimiters that defines that a word end here -> "someWord," <- comma, the word ends here
     @staticmethod
     def RIGHT_DELIMITERS() -> List[str]:
@@ -221,7 +234,7 @@ class QS(scrapy.Spider):
                     # check if mp3 file isn't already downloaded
                     check_file_already_downloaded = Path(audio_file_full_path)
                     if not check_file_already_downloaded.is_file():
-                        subprocess.run(['curl', QS.BASE_DOMAIN + audio_uk, '-o', audio_file_full_path])
+                        QS.execute_command('curl ' + QS.BASE_DOMAIN + audio_uk + ' -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
                     audio_tag += ' [sound:' + audio_file_name + ']'
             else:
                 # as fallback, get the american pronunciation instead
@@ -236,7 +249,7 @@ class QS(scrapy.Spider):
                     # check if mp3 file isn't already downloaded
                     check_file_already_downloaded = Path(audio_file_full_path)
                     if not check_file_already_downloaded.is_file():
-                        subprocess.run(['curl', QS.BASE_DOMAIN + audio_us, '-o', audio_file_full_path])
+                        QS.execute_command('curl ' + QS.BASE_DOMAIN + audio_us + ' -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
                     audio_tag += ' US: [sound:' + audio_file_name + ']'
 
 
@@ -329,7 +342,9 @@ class QS(scrapy.Spider):
                         # check if audio file isn't already downloaded NOT USED
                         check_file_already_downloaded = Path(def_img_file_full_path)
                         if not check_file_already_downloaded.is_file():
-                            subprocess.run(['curl', def_img_src, '-o', def_img_file_full_path])
+                            # TODO import the logging library and implement it
+                            # TODO add debug logging for all the OS commands
+                            QS.execute_command('curl ' + def_img_src + ' -o "' + def_img_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
                         def_img_tag = "<img src='" + def_img_file_name + "' width='400px'>" #  style='filter: invert(1)'>"
                         front += def_img_tag
                     
