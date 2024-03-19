@@ -5,4 +5,4 @@ lib
 bin
 *cambridgetoanki.log
 *anki_to_import.csv
-*pyvenv.cfg
+pyvenv.cfg

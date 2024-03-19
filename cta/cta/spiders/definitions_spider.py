@@ -234,7 +234,7 @@ class QS(scrapy.Spider):
                     # check if mp3 file isn't already downloaded
                     check_file_already_downloaded = Path(audio_file_full_path)
                     if not check_file_already_downloaded.is_file():
-                        QS.execute_command('curl ' + QS.BASE_DOMAIN + audio_uk + ' -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
+                        QS.execute_command('curl "' + QS.BASE_DOMAIN + audio_uk + '" -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
                     audio_tag += ' [sound:' + audio_file_name + ']'
             else:
                 # as fallback, get the american pronunciation instead
@@ -249,7 +249,7 @@ class QS(scrapy.Spider):
                     # check if mp3 file isn't already downloaded
                     check_file_already_downloaded = Path(audio_file_full_path)
                     if not check_file_already_downloaded.is_file():
-                        QS.execute_command('curl ' + QS.BASE_DOMAIN + audio_us + ' -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
+                        QS.execute_command('curl "' + QS.BASE_DOMAIN + audio_us + '" -o "' + audio_file_full_path + '" -H "User-Agent: ' + QS.CUSTOM_USER_AGENT + '"')
                     audio_tag += ' US: [sound:' + audio_file_name + ']'
 
 
