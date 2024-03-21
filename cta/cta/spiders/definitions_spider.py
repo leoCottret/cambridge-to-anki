@@ -161,12 +161,14 @@ class QS(scrapy.Spider):
         url_split = str(response.url).split('/')
         title = url_split[len(url_split)-1] # to rename the audio file
         title = title.split('?')[0] # remove part before ? if it exists, it's just a redirection
-        
+
         # replace weird special characters that can be found in url on some rare occasions by '_', to avoid naming the images and audio files with uncommon characters
         for i in range(len(title)):
             if not title[i].isalnum():
                 title = title[:i] + '-' + title[i+1:]
 
+        # DO NOT REMOVE
+        print(title)
         note_id = QS.ANKI_IMPORT_NOTE_ID_FLAG + '-' + title
         front = '<!-- ' + QS.ANKI_FILE_FLAG + ' ' + QS.VERSION  + ' -->\n' # front of the anki card
         back = '' # back of the anki card
@@ -289,8 +291,8 @@ class QS(scrapy.Spider):
             # extra stuff is extra convoluted but there are many possible cases
             extra_stuff = QS.getText(header, '.anc-info-head *::text', '', '') # eg phrasal verb
             extra_stuff_2 = QS.getText(definition, '.di-info>.lab *::text, .pos-header>.lab *::text', '', '') # eg formal, disapproving
-            extra_stuff_3 = QS.getText(header, '.spellvar *::text, .dspellvar *::text', '', '') # eg anticonvulsant, also anti-convulsant
-
+            extra_stuff_3 = QS.getText(header, '.spellvar *::text, .dspellvar *::text', '', '') # eg anticonvulsant, also anti-convulsant, old-fashioned
+            
             extra_title = extra_stuff_3.split('also ')
             if ( len(extra_title) > 1 ):
                 QS.WTF.append(extra_title[1].split(')')[0])
@@ -298,7 +300,7 @@ class QS(scrapy.Spider):
             extra_final = extra_stuff
             extra_final += ((', ' + extra_stuff_2) if extra_final.isspace() else extra_stuff_2)
             extra_final += ((', ' + extra_stuff_3) if extra_final.isspace() else extra_stuff_3)
-            extra_final = (('<i><div>' + extra_final + '</i></div>\n') if extra_final.isspace() else '')
+            extra_final = (('<i><div>' + extra_final + '</i></div>\n') if not extra_final.isspace() else '')
             front += extra_final
             
             # add plural, present participle etc.
